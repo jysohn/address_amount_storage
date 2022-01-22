@@ -8,9 +8,9 @@ def print_state():
 
 def deploy_storage():
     account = get_account()
-    if (Storage[-1]):
-        print(f"Storage exists at {Storage[-1]}\n")
-        return Storage[-1]
+    #if (Storage[-1]):
+    #    print(f"Storage exists at {Storage[-1]}\n")
+    #    return Storage[-1]
     storage = Storage.deploy(
         {"from": account},
         publish_source=config["networks"][network.show_active()]["verify"]
@@ -18,6 +18,16 @@ def deploy_storage():
     print("Storage deployed!\n")
     return storage
 
+def check_storage():
+    account = get_account()
+    storage = Storage[-1]
+    check_funder = False
+    for a in storage.funders:
+        if a == account:
+            check_funder = True
+    return (check_funder, storage.addressToAmountFund[account])
+
 def main():
     print_state()
     deploy_storage()
+    check_storage()
