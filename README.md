@@ -1,0 +1,1 @@
+Repository to grasp how interactions work within smart contracts for addresses and tokens.
