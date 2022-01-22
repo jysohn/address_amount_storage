@@ -8,7 +8,13 @@ def print_state():
 
 def deploy_storage():
     account = get_account()
-    storage = Storage.deploy({"from": account})
+    if (Storage[-1]):
+        print(f"Storage exists at {Storage[-1]}\n")
+        return Storage[-1]
+    storage = Storage.deploy(
+        {"from": account},
+        publish_source=config["networks"][network.show_active()]["verify"]
+    )
     print("Storage deployed!\n")
     return storage
 

@@ -3,5 +3,6 @@ networks:
   default: development
   rinkeby:
     link_token: "0x01be23585060835e02b77ef475b0cc51aa1e0709"
+    verify: TRUE
 wallets:
   from_key: ${PRIVATE_KEY}
