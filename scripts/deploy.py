@@ -6,28 +6,40 @@ def print_state():
     active_network = network.show_active()
     print(f"\nActive account is {account} and active network is '{active_network}'\n")
 
-def deploy_storage():
+def deploy_storage(new_deployment=False):
     account = get_account()
-    #if (Storage[-1]):
-    #    print(f"Storage exists at {Storage[-1]}\n")
-    #    return Storage[-1]
-    storage = Storage.deploy(
-        {"from": account},
-        publish_source=config["networks"][network.show_active()]["verify"]
-    )
-    print("Storage deployed!\n")
-    return storage
+    if (new_deployment==False):
+        if (Storage[-1]):
+            print(f"Storage exists at {Storage[-1]}\n")
+            return Storage[-1]
+        else:
+            print("No previous Storage exists, deploying now...")
+            storage = Storage.deploy(
+                {"from": account},
+                publish_source=config["networks"][network.show_active()]["verify"]
+            )
+            print("Storage deployed!\n")
+            return storage
+    else:
+        print("Deploying new Storage contract...")
+        storage = Storage.deploy(
+                {"from": account},
+                publish_source=config["networks"][network.show_active()]["verify"]
+        )
+        print("Storage deployed!\n")
+        return storage
 
-def check_storage():
+def check_funder():
     account = get_account()
     storage = Storage[-1]
-    check_funder = False
-    for a in storage.funders:
-        if a == account:
-            check_funder = True
-    return (check_funder, storage.addressToAmountFund[account])
+    is_funder = storage.checkFunder({"from": account})
+    return is_funder
+
+def check_amount_funded():
+    pass
 
 def main():
     print_state()
-    deploy_storage()
-    check_storage()
+    deploy_storage(new_deployment=True)
+    should_be_false = check_funder()
+    print(f"should be false = {should_be_false}")

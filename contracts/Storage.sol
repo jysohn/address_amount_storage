@@ -13,4 +13,19 @@ contract Storage{
         addressToAmountFunded[msg.sender] = msg.value;
         funders.push(msg.sender);
     }
+
+    function getAmountFunded() public returns (uint256) {
+        return addressToAmountFunded[msg.sender];
+    }
+
+    function checkFunder() public returns (bool) {
+        bool isFunder = false;
+        for (uint256 funderIndex=0; funderIndex<funders.length; funderIndex++) {
+            address funder = funders[funderIndex];
+            if (funder == msg.sender) {
+                isFunder = true;
+            }
+        }
+        return isFunder;
+    }
 }
