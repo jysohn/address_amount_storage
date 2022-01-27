@@ -10,5 +10,7 @@ networks:
   rinkeby:
     link_token: "0x01be23585060835e02b77ef475b0cc51aa1e0709"
     verify: TRUE
+  development:
+    verify: FALSE
 wallets:
   from_key: ${PRIVATE_KEY}

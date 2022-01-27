@@ -1,5 +1,6 @@
 from scripts.helpful_scripts import get_account, get_contract
 from brownie import Storage, network, config
+from web3 import Web3
 
 def print_state():
     account = get_account()
@@ -8,10 +9,12 @@ def print_state():
 
 def deploy_storage(new_deployment=False):
     account = get_account()
+    # return latest contract
     if (new_deployment==False):
         if (Storage[-1]):
             print(f"Storage exists at {Storage[-1]}\n")
             return Storage[-1]
+        # deploy new contract if none exists
         else:
             print("No previous Storage exists, deploying now...")
             storage = Storage.deploy(
@@ -20,6 +23,8 @@ def deploy_storage(new_deployment=False):
             )
             print("Storage deployed!\n")
             return storage
+    
+    # return latest contract
     else:
         print("Deploying new Storage contract...")
         storage = Storage.deploy(
@@ -33,13 +38,31 @@ def check_funder():
     account = get_account()
     storage = Storage[-1]
     is_funder = storage.checkFunder({"from": account})
-    return is_funder
+    is_funder.wait(1)
 
 def check_amount_funded():
-    pass
+    account = get_account()
+    storage = Storage[-1]
+    amount_funded = storage.getAmountFunded({"from": account})
+    amount_funded.wait(1)
+    return amount_funded
+
+def fund_storage():
+    account = get_account()
+    storage = Storage[-1]
+    value = Web3.toWei(0.1, "ether")
+    fund_tx = storage.fund({"from": account, "value": value})
+    fund_tx.wait(1)
+
+def withdraw_storage():
+    account = get_account()
+    storage = Storage[-1]
+    withdraw_tx = storage.withdrawAll({"from": account})
+    withdraw_tx.wait(1)
 
 def main():
     print_state()
     deploy_storage(new_deployment=True)
-    should_be_false = check_funder()
-    print(f"should be false = {should_be_false}")
+    fund_storage()
+    withdraw_storage()
+    print("done")
