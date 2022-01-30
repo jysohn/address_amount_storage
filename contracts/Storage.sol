@@ -10,12 +10,18 @@ contract Storage is Ownable{
     
     function fund() public payable {
         payable(address(this)).call{value:msg.value}("");
-        addressToAmountFunded[msg.sender] = msg.value;
+        addressToAmountFunded[msg.sender] += msg.value;
         funders.push(msg.sender);
     }
 
     function withdrawAll() onlyOwner public payable {
         msg.sender.transfer(address(this).balance);
+    }
+
+    function withdrawSome(uint256 amountEth) onlyOwner public payable {
+        uint256 amountWei = amountEth * 10 ** 18;
+        msg.sender.transfer(amountWei);
+        addressToAmountFunded[msg.sender] -= amountWei;
     }
 
     function getAmountFunded() public view returns (uint256) {

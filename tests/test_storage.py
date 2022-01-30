@@ -20,5 +20,6 @@ def test_withdraw_all_zero():
     owner = get_account()
     amount = Web3.toWei(0.1, "ether")
     storage.fund({"from": owner, "value": amount})
+    assert storage.balance() == amount
     storage.withdrawAll({"from": owner})
     assert storage.balance() == 0
