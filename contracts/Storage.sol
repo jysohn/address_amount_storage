@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.6.6;
+pragma solidity ^0.7.6;
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Storage{
+contract Storage is Ownable{
     mapping(address => uint256) public addressToAmountFunded;
     address[] public funders;
     event isFunderCheck(bool isFunder);
@@ -13,11 +14,11 @@ contract Storage{
         funders.push(msg.sender);
     }
 
-    function withdrawAll() public payable {
+    function withdrawAll() onlyOwner public payable {
         msg.sender.transfer(address(this).balance);
     }
 
-    function getAmountFunded() public returns (uint256) {
+    function getAmountFunded() public view returns (uint256) {
         return addressToAmountFunded[msg.sender];
     }
 
